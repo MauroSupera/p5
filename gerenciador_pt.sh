@@ -434,7 +434,7 @@ atualizar_status() {
     AMBIENTE_PATH=$1
     NOVO_STATUS=$2
     echo "$NOVO_STATUS" > "${AMBIENTE_PATH}/status"
-    echo -e "${CYAN}${INFO} Status do ambiente atualizado para: ${GREEN}${NOVO_STATUS}${NC}"
+    echo -e "${CYAN}Status do ambiente atualizado para: ${GREEN}${NOVO_STATUS}${NC}"
 }
 
 # === RECUPERAR STATUS DO AMBIENTE ===
@@ -485,59 +485,34 @@ anima_texto() {
 # === VERIFICAR SESSÕES EM BACKGROUND ===
 verificar_sessoes() {
     echo -e "${CYAN}======================================${NC}"
-    anima_texto "       VERIFICANDO SESSÕES EM BACKGROUND"
-    echo -e "${CYAN}======================================${NC}"
-
+    anima_texto "VERIFICANDO SESSOES EM BACKGROUND..."
     for i in $(seq 1 $NUM_AMBIENTES); do
         AMBIENTE_PATH="${BASE_DIR}/ambiente${i}"
-
-        # Verifica se o arquivo .session existe
         if [ -f "${AMBIENTE_PATH}/.session" ]; then
             STATUS=$(recuperar_status "$AMBIENTE_PATH")
-
-            # Define o indicador visual de status (círculo colorido)
-            if [ "$STATUS" = "ON" ]; then
-                INDICADOR_STATUS="${GREEN}${CIRCLE_ON}${NC}"
-            else
-                INDICADOR_STATUS="${YELLOW}${CIRCLE_OFF}${NC}"
-            fi
-
-            # Exibe o status do ambiente
-            echo -e "${YELLOW}Verificando ambiente ${i}...${NC}"
-            echo -e "${CYAN}Status atual: ${INDICADOR_STATUS}${NC}"
-
-            # Verifica se o status é ON
             if [ "$STATUS" = "ON" ]; then
                 COMANDO=$(cat "${AMBIENTE_PATH}/.session")
+                
                 if [ -n "$COMANDO" ]; then
                     echo -e "${YELLOW}Executando sessão em background para o ambiente ${i}...${NC}"
-
-                    # Mata qualquer processo residual
                     pkill -f "$COMANDO" 2>/dev/null
-
-                    # Inicia o bot em segundo plano
                     cd "$AMBIENTE_PATH" || continue
-                    nohup sh -c "$COMANDO" > "${AMBIENTE_PATH}/nohup.out" 2>&1 &
+                    nohup $COMANDO > nohup.out 2>&1 &
                     if [ $? -eq 0 ]; then
-                        echo -e "${GREEN}[SUCESSO] Sessão em background ativada para o ambiente ${i}.${NC}"
+                        echo -e "${GREEN}SESSÃO EM BACKGROUND ATIVA PARA O AMBIENTE ${i}.${NC}"
                     else
-                        echo -e "${RED}[ERRO] Não foi possível ativar a sessão no ambiente ${i}.${NC}"
+                        echo -e "${RED}Erro ao tentar ativar a sessão no ambiente ${i}.${NC}"
                     fi
                 else
-                    echo -e "${YELLOW}[AVISO] Comando vazio encontrado no arquivo .session do ambiente ${i}.${NC}"
+                    echo -e "${YELLOW}Comando vazio encontrado no arquivo .session do ambiente ${i}.${NC}"
                 fi
             else
-                echo -e "${RED}[IGNORADO] O ambiente ${i} está com status OFF.${NC}"
+                echo -e "${RED}O ambiente ${i} está com status OFF. Ignorando...${NC}"
             fi
         else
-            echo -e "${RED}[IGNORADO] Nenhum arquivo .session encontrado no ambiente ${i}.${NC}"
+            echo -e "${RED}Nenhum arquivo .session encontrado no ambiente ${i}.${NC}"
         fi
-
-        echo -e "${CYAN}--------------------------------------${NC}"
     done
-
-    echo -e "${CYAN}======================================${NC}"
-    anima_texto "       VERIFICAÇÃO CONCLUÍDA"
     echo -e "${CYAN}======================================${NC}"
 }
 # === ÍCONES UNICODE ===
