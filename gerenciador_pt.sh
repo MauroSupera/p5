@@ -21,7 +21,7 @@ WHITELIST_HOSTNAMES=("app.vexufy.com")
 WHITELIST_IPS=("199.85.209.85" "199.85.209.109")
 VALIDATED=false
 # === CONFIGURAÇÕES DE VERSÃO ===
-VERSAO_LOCAL="1.0.4"  # Versão atual do script
+VERSAO_LOCAL="1.0.1"  # Versão atual do script
 URL_SCRIPT="https://raw.githubusercontent.com/MauroSupera/gerenciador-updater/refs/heads/main/pt/p5/gerenciador_pt.sh"  # Link para o conteúdo do script no GitHub
 
 # Obtém o nome do script atual (ex.: gerenciador.sh)
